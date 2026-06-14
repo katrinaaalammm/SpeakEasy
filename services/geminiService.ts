@@ -1,8 +1,23 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Report, TrainingMode } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+export const getApiKey = (): string => {
+  const stored = localStorage.getItem('speak_easy_api_key');
+  if (stored) return stored;
+  return process.env.API_KEY || '';
+};
+
+export const saveApiKey = (key: string) => {
+  if (key.trim()) {
+    localStorage.setItem('speak_easy_api_key', key.trim());
+  } else {
+    localStorage.removeItem('speak_easy_api_key');
+  }
+};
+
+const getAiClient = () => {
+  return new GoogleGenAI({ apiKey: getApiKey() });
+};
 
 // Helper to define schemas
 const contentSchema: Schema = {
@@ -44,7 +59,7 @@ export const generateSessionContent = async (topic: string, mode: TrainingMode):
         Generate insightful audience questions for the Q&A session after the speech.`;
     }
 
-    const response = await ai.models.generateContent({
+    const response = await getAiClient().models.generateContent({
       model: "gemini-2.5-flash",
       contents: userPrompt,
       config: {
@@ -84,7 +99,7 @@ export const generateFeedback = async (topic: string, reportData: Omit<Report, '
       Write a short, constructive feedback (max 2 sentences). Focus on improvement.
     `;
 
-    const response = await ai.models.generateContent({
+    const response = await getAiClient().models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
