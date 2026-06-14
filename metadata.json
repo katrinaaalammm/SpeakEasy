@@ -1,0 +1,9 @@
+{
+  "name": "AI Public Speaking Trainer",
+  "description": "An AI-powered simulator to help students improve spontaneous speaking skills, reduce reliance on scripts, and build confidence through simulated scenarios.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": []
+}
